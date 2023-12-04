@@ -35,9 +35,6 @@ metals_config.on_attach = function(client, bufnr)
 --	map("n", "<leader>f", vim.lsp.buf.format)
 --	map("n", "<leader>ca", vim.lsp.buf.code_action)
 
-	map("n", "<leader>ws", function()
-		require("metals").hover_worksheet()
-	end)
 
 	-- all workspace diagnostics
 	map("n", "<leader>aa", vim.diagnostic.setqflist)
@@ -173,10 +170,6 @@ metals_config.settings = {
 }
 
 
-metals_config.on_attach = function(client, bufnr)
-  require("metals").setup_dap()
-end
-
 -- Autocmd that will actually be in charging of starting the whole thing
 local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
@@ -195,3 +188,23 @@ vim.api.nvim_create_autocmd("FileType", {
 -- execute tests
 -- TODO: Do two things 1) A Debug Adapter && 2) DAP Configuration (how to
 -- attach)
+local nmap = function(keys, func, desc)
+	if desc then
+		desc = 'LSP: ' .. doc
+	end
+
+	vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+end
+
+nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+
+nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')	
+nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
+nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbol')
+nmap('<leaders>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+
+
