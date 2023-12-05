@@ -3,6 +3,7 @@ set number
 set tabstop=2
 set shiftwidth=2
 set textwidth=80
+set autoindent on
 
 
 call plug#begin('~/.config/nvim/site')
