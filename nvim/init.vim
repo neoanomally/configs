@@ -3,7 +3,7 @@ set number
 set tabstop=2
 set shiftwidth=2
 set textwidth=80
-set autoindent on
+filetype indent on
 
 
 call plug#begin('~/.config/nvim/site')
@@ -31,20 +31,7 @@ Plug 'numToStr/Comment.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'j-hui/fidget.nvim'
 
-
-
-
 call plug#end()
-
-
-
-
-" Find files using Telescope command-line sugar.
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-
 
 " Using Lua functions
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
@@ -52,10 +39,13 @@ nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 nnoremap <leader>nt <cmd>NERDTree<cr>
+nnoremap <S-Tab> <<
 
 lua require('metals')
-lua require('neoanomally/nom-metals')
-lua require('neoanomally/main')
+" The Nom-Metals file has all kinds of keymappings and set up for nvim 
+" The main file has all kinds of developer settings in general. Both are good. 
+lua require('neoanomally/nom-metals') 
+lua require('neoanomally/main') 
 lua vim.o.hlsearch = false
 lua vim.o.mouse = 'a'
 

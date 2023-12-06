@@ -29,12 +29,11 @@ metals_config.on_attach = function(client, bufnr)
 --	map("n", "gr", vim.lsp.buf.references)
 --	map("n", "gds", vim.lsp.buf.document_symbol)
 --	map("n", "gws", vim.lsp.buf.workspace_symbol)
---	map("n", "<leader>cl", vim.lsp.codelens.run)
+-- 	vim.keymap.set('n', '<leader>cl', vim.lsp.codelens.run,{ desc = '[C]odelens [R]un' } )
 --	map("n", "<leader>sh", vim.lsp.buf.signature_help)
 --	map("n", "<leader>rn", vim.lsp.buf.rename)
 --	map("n", "<leader>f", vim.lsp.buf.format)
 --	map("n", "<leader>ca", vim.lsp.buf.code_action)
-
 
 	-- all workspace diagnostics
 	map("n", "<leader>aa", vim.diagnostic.setqflist)
@@ -52,38 +51,39 @@ metals_config.on_attach = function(client, bufnr)
 	-- buffer diagnostics only
 	map("n", "<leader>d", vim.diagnostic.setloclist)
 
-	map("n", "[c", function()
+	vim.keymap.set('n', '[c', function()
 		vim.diagnostic.goto_prev({ wrap = false })
 	end)
 
-	map("n", "]c", function()
+	vim.keymap.set('n', ']c', function()
 		vim.diagnostic.goto_next({ wrap = false })
 	end)
 
+	
+	vim.keymap.set('n', '<leader>dc', function()
+		require('dap').continue()
+	end)
+
+	vim.keymap.set('n', '<leader>dK', function()
+		require('dap').hover()
+	end)
+
+	vim.keymap.set('n', '<leader>dt', function()
+		require('dap').toggle_breakpoint()
+	end)
+
+	vim.keymap.set('n', '<leader>dso', function()
+		require('dap').step_over()
+	end)
+	
+	vim.keymap.set('n', '<leader>dsi', function()
+		require('dap').step_into()
+	end)
+	
 	-- Example mappings for usage with nvim-dap. If you don't use that, you can
 	-- skip these
-	map("n", "<leader>dc", function()
-		require("dap").continue()
-	end)
-
 	map("n", "<leader>dr", function()
 		require("dap").repl.toggle()
-	end)
-
-	map("n", "<leader>dK", function()
-		require("dap.ui.widgets").hover()
-	end)
-
-	map("n", "<leader>dt", function()
-		require("dap").toggle_breakpoint()
-	end)
-
-	map("n", "<leader>dso", function()
-		require("dap").step_over()
-	end)
-
-	map("n", "<leader>dsi", function()
-		require("dap").step_into()
 	end)
 
 	map("n", "<leader>dl", function()
@@ -158,6 +158,7 @@ dap.configurations.scala = {
 		type = "scala",
 		request = "launch",
 		name = "Test File",
+		console = "integratedTerminal",
 		metals = {
 			runType = "testFile",
 		},

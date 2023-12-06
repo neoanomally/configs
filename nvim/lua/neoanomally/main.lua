@@ -11,7 +11,6 @@ require('Comment').setup()
 require('mason').setup()
 vim.g.mapleader = ';'
 
-print("Hi")
 pcall(require('telescope').loadextension, 'fzf')
 
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -29,20 +28,65 @@ vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
-
 vim.keymap.set('n', '<leader>nt', '<cmd>NERDTreeFocus<cr>', {desc = 'Open [N]erd [T]ree.' })
-
 
 -- These are functions mostly for metals
 vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename,{ desc = '[R]e[n]ame' } )
 vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {desc = '[C]ode [A]ction' })
+vim.keymap.set('n', '<leader>cl', vim.lsp.codelens.run, {desc = '[C]ode[L]ens Run' })
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {desc = '[G]oto [D]efinition.'})
-vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eference'})
 vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, {desc = '[G]oto [I]mplementation'})
 -- vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definitions, { desc = 'Type [D]efinition' })
+vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eference'})
 vim.keymap.set('n', '<leader>ds', require('telescope.builtin').lsp_document_symbols, {desc = '[D]ocument [S]ymbol'})
 vim.keymap.set('n', '<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, {desc = '[W]orkspace [S]ymbol'})
 
+vim.keymap.set('n', '[c', function()
+	vim.diagnostic.goto_prev({ wrap = false })
+end, { desc = 'Goto Preview' })
+
+vim.keymap.set('n', ']c', function()
+	vim.diagnostic.goto_next({ wrap = false })
+end, { desc = 'Goto Next' })
+
+vim.keymap.set('n', '<Leader>df', function()
+	local widgets = require('dap.ui.widgets')
+	widgets.centered_float(widgets.frames)
+end, { desc = '[D]ap [F]rames widgets' } )
+
+vim.keymap.set('n', '<Leader>ds', function()
+	local widgets = require('dap.ui.widgets')
+	widgets.centered_float(widgets.scopes)
+end, { desc = '[D]ap Widgets [S]cope' })
+
+vim.keymap.set('n', '<leader>dc', function()
+	require('dap').continue()
+end, { desc = '[D]ap [C]ontinue' } )
+
+vim.keymap.set('n', '<leader>dr', function()
+	require('dap').repl.toggle()
+end, { desc = '[D]ap Open [R]epl' } )
+
+vim.keymap.set('n', '<leader>dK', function()
+	require('dap').hover()
+end, { desc = '[D]ap Hover' })
+
+vim.keymap.set('n', '<leader>dt', function()
+	require('dap').toggle_breakpoint()
+end, { desc = '[D]ap Breakpoint [T]oggle' })
+
+vim.keymap.set('n', '<leader>dso', function()
+	require('dap').step_over()
+end, { desc = '[D]ap [S]tep[O]ver' } )
+
+vim.keymap.set('n', '<leader>dsi', function()
+	require('dap').step_into()
+end, { desc = '[D]ap [S]tep [I]nto' })
+
+vim.keymap.set('n', '<Leader>dsb', function() 
+	require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end,
+	{ desc = '[D]ap [S]et [B]reakpoint' }
+)
 
 require('mason').setup()
 
