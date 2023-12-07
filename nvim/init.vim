@@ -2,7 +2,8 @@ colorscheme jellybeans
 set number
 set tabstop=2
 set shiftwidth=2
-set textwidth=80
+" Maybe we should have text width at 100
+set textwidth=90
 filetype indent on
 
 
@@ -26,6 +27,7 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'williamboman/mason.nvim'
+Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'numToStr/Comment.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
@@ -46,6 +48,7 @@ lua require('metals')
 " The main file has all kinds of developer settings in general. Both are good. 
 lua require('neoanomally/nom-metals') 
 lua require('neoanomally/main') 
+" lua require('neoanomally/nom-java')
 lua vim.o.hlsearch = false
 lua vim.o.mouse = 'a'
 

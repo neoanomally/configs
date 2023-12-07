@@ -39,13 +39,16 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 vim.keymap.set('n', '<leader>nt', '<cmd>NERDTreeFocus<cr>', {desc = 'Open [N]erd [T]ree.' })
 
 -- These are functions mostly for metals
+
+vim.keymap.set('n', '<leader>ho', vim.lsp.buf.hover,{ desc = 'Signature h[O]ver' } )
+vim.keymap.set('n', '<leader>si', vim.lsp.buf.signature_help, { desc = '[SI]gnature help' })
 vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename,{ desc = '[R]e[n]ame' } )
 vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {desc = '[C]ode [A]ction' })
 vim.keymap.set('n', '<leader>cl', vim.lsp.codelens.run, {desc = '[C]ode[L]ens Run' })
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {desc = '[G]oto [D]efinition.'})
-vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, {desc = '[G]oto [I]mplementation'})
+vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition, {desc = '[G]oto [D]efinition.'})
+vim.keymap.set('n', '<leader>gI', vim.lsp.buf.implementation, {desc = '[G]oto [I]mplementation'})
 -- vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definitions, { desc = 'Type [D]efinition' })
-vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eference'})
+vim.keymap.set('n', '<leader>gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eference'})
 vim.keymap.set('n', '<leader>ds', require('telescope.builtin').lsp_document_symbols, {desc = '[D]ocument [S]ymbol'})
 vim.keymap.set('n', '<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, {desc = '[W]orkspace [S]ymbol'})
 
@@ -96,13 +99,19 @@ vim.keymap.set('n', '<Leader>dsb', function()
 	{ desc = '[D]ap [S]et [B]reakpoint' }
 )
 
+vim.keymap.set('n', '<leader>mt', function() 
+	require("telescope").extensions.metals.commands() 
+end, { desc = "[M]etals [T]elescope" }
+)
+
+
 require('mason').setup()
 
 local servers = { 'clangd', 'rust_analyzer', 'luau_lsp', 'jdtls' }
 
-require('mason-lspconfig').setup {
-	ensure_installed = servers,
-}
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 for _, lsp in ipairs(servers) do
 	require('lspconfig')[lsp].setup {
@@ -111,5 +120,28 @@ for _, lsp in ipairs(servers) do
 	}
 end
 
+require('mason-lspconfig').setup {
+	ensure_installed = servers,
+}
+
+require("mason-nvim-dap").setup ({
+	ensured_installed = servers,
+	automatic_installation = true,
+})
+local dap = require("dap")
+dap.configurations.java = {
+  {
+    type = "java",
+    request = "launch",
+    name = "RunOrTest"
+  },
+}
+
+dap.adapters.java = {
+
+}
+
+
+require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'})
 require('fidget').setup()
 

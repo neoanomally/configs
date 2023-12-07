@@ -22,18 +22,6 @@ metals_config.init_options.statusBarProvider = "on"
 metals_config.on_attach = function(client, bufnr)
 	require("metals").setup_dap()
 
-	-- LSP mappings
---	map("n", "gD", vim.lsp.buf.definition)
---	map("n", "K", vim.lsp.buf.hover)
---	map("n", "gi", vim.lsp.buf.implementation)
---	map("n", "gr", vim.lsp.buf.references)
---	map("n", "gds", vim.lsp.buf.document_symbol)
---	map("n", "gws", vim.lsp.buf.workspace_symbol)
--- 	vim.keymap.set('n', '<leader>cl', vim.lsp.codelens.run,{ desc = '[C]odelens [R]un' } )
---	map("n", "<leader>sh", vim.lsp.buf.signature_help)
---	map("n", "<leader>rn", vim.lsp.buf.rename)
---	map("n", "<leader>f", vim.lsp.buf.format)
---	map("n", "<leader>ca", vim.lsp.buf.code_action)
 
 	-- all workspace diagnostics
 	map("n", "<leader>aa", vim.diagnostic.setqflist)
@@ -50,6 +38,7 @@ metals_config.on_attach = function(client, bufnr)
 
 	-- buffer diagnostics only
 	map("n", "<leader>d", vim.diagnostic.setloclist)
+
 
 	vim.keymap.set('n', '[c', function()
 		vim.diagnostic.goto_prev({ wrap = false })
@@ -89,7 +78,7 @@ metals_config.on_attach = function(client, bufnr)
 	map("n", "<leader>dl", function()
 		require("dap").run_last()
 	end)
-	end
+end
 
 
 -- completion related settings
