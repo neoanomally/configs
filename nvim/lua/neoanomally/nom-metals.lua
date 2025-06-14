@@ -24,20 +24,21 @@ metals_config.on_attach = function(client, bufnr)
 
 
 	-- all workspace diagnostics
-	map("n", "<leader>aa", vim.diagnostic.setqflist)
+	-- map("n", "<leader>aa", vim.diagnostic.setqflist)
 
 	-- all workspace errors
-	map("n", "<leader>ae", function()
+	
+	vim.keymap.set("n", "<leader>ae", function()
 		vim.diagnostic.setqflist({ severity = "E" })
 	end)
 
 	-- all workspace warnings
-	map("n", "<leader>aw", function()
+vim.keymap.set("n", "<leader>aw", function()
 		vim.diagnostic.setqflist({ severity = "W" })
 	end)
 
 	-- buffer diagnostics only
-	map("n", "<leader>d", vim.diagnostic.setloclist)
+	vim.keymap.set("n", "<leader>d", vim.diagnostic.setloclist)
 
 
 	vim.keymap.set('n', '[c', function()
@@ -71,11 +72,11 @@ metals_config.on_attach = function(client, bufnr)
 	
 	-- Example mappings for usage with nvim-dap. If you don't use that, you can
 	-- skip these
-	map("n", "<leader>dr", function()
+	vim.keymap.set("n", "<leader>dr", function()
 		require("dap").repl.toggle()
 	end)
 
-	map("n", "<leader>dl", function()
+	vim.keymap.set("n", "<leader>dl", function()
 		require("dap").run_last()
 	end)
 end
@@ -195,5 +196,20 @@ vim.api.nvim_create_autocmd("FileType", {
 -- nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
 -- nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbol')
 -- nmap('<leaders>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+require("dapui").setup()
+local dap, dapui = require("dap"), require("dapui")
 
+vim.keymap.set('n', '<leader><C-d>', function()
+	dapui.toggle()
+end, { desc = "Toggle [D]apui" })
+
+-- dap.listeners.after.event_initialized["dapui_config"] = function()
+--   dapui.open()
+-- end
+-- dap.listeners.before.event_terminated["dapui_config"] = function()
+--   dapui.close()
+-- end
+-- dap.listeners.before.event_exited["dapui_config"] = function()
+--   dapui.close()
+-- end
 

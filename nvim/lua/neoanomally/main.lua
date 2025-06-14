@@ -26,7 +26,7 @@ vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc =
 vim.keymap.set('n', '<leader>/', function()
 	require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
 		winblend = 10,
-		previewer = false
+		previewer = true
 })
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
@@ -46,6 +46,7 @@ vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename,{ desc = '[R]e[n]ame' } )
 vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {desc = '[C]ode [A]ction' })
 vim.keymap.set('n', '<leader>cl', vim.lsp.codelens.run, {desc = '[C]ode[L]ens Run' })
 vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition, {desc = '[G]oto [D]efinition.'})
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {desc = '[G]oto [D]efinition.'})
 vim.keymap.set('n', '<leader>gI', vim.lsp.buf.implementation, {desc = '[G]oto [I]mplementation'})
 -- vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definitions, { desc = 'Type [D]efinition' })
 vim.keymap.set('n', '<leader>gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eference'})
@@ -107,13 +108,44 @@ end, { desc = "[M]etals [T]elescope" }
 
 require('mason').setup()
 
-local servers = { 'clangd', 'rust_analyzer', 'luau_lsp', 'jdtls' }
+
+local function get_bundles()
+  local mason_registry = require "mason-registry"
+  local java_debug = mason_registry.get_package "java-debug-adapter"
+  local java_test = mason_registry.get_package "java-test"
+  local java_debug_path = java_debug:get_install_path()
+  local java_test_path = java_test:get_install_path()
+  local bundles = {}
+  vim.list_extend(bundles, vim.split(vim.fn.glob(java_debug_path .. "/extension/server/com.microsoft.java.debug.plugin-*.jar"), "\n"))
+  vim.list_extend(bundles, vim.split(vim.fn.glob(java_test_path .. "/extension/server/*.jar"), "\n"))
+  return bundles
+end
+
+local servers = {
+	clangd = { },
+	rust_analyzer = { },
+	luau_lsp = { },
+  jdtls = {
+		 init_options = {
+			 bundles = get_bundles();
+    }
+	},
+	pylsp = {
+    plugins = {
+      pycodestyle = {
+        ignore = {'W391'},
+        maxLineLength = 100
+      }
+    }
+  },
+}
+
 
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
-for _, lsp in ipairs(servers) do
+for _, lsp in ipairs(vim.tbl_keys(servers)) do
 	require('lspconfig')[lsp].setup {
 		on_attach = on_attach,
 		capabilities = capabilities
@@ -121,13 +153,26 @@ for _, lsp in ipairs(servers) do
 end
 
 require('mason-lspconfig').setup {
-	ensure_installed = servers,
+	ensure_installed = vim.tbl_keys(servers),
 }
 
 require("mason-nvim-dap").setup ({
-	ensured_installed = servers,
 	automatic_installation = true,
+	ensured_installed = {
+		'javadbg', 'javatest'
+	}
 })
+
+require('mason-lspconfig').setup_handlers {
+  function(server_name)
+    require('lspconfig')[server_name].setup {
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = servers[server_name],
+    }
+  end,
+}
+
 local dap = require("dap")
 dap.configurations.java = {
   {
@@ -137,11 +182,53 @@ dap.configurations.java = {
   },
 }
 
-dap.adapters.java = {
+dap.configurations.python = {
+  {
+    type = 'python';
+    request = 'launch';
+    name = "Launch file";
+    program = "${file}";
+    pythonPath = function()
+      return '/usr/bin/python'
+    end;
+  },
+}
+
+require("dap-python").setup("/Users/mesanders/.virtualenvs/debugpy/bin/python3")
+require("dap-python").setup("uv")
+-- require('lspconfig')['jdtls'].setup {
+--	on_attach = function(_, _)	
+--		require('jdtls').setup_dap { hotcodereplace = "auto" };
+--		require("jdtls.dap").setup_dap_main_class_configs();
+--		require("jdtls.setup").add_commands();
+--		require'jdtls'.test_class();
+--		require'jdtls'.test_nearest_method();
+--	end
+-- }
+
+
+require'lspconfig'.pyright.setup{on_attach=on_attach}
+vim.o.completeopt = 'menuone,noselect'
+require'cmp'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'enable';
+  throttle_time = 80;
+  source_timeout = 200;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+
+  source = {
+    path = true;
+    buffer = true;
+    nvim_lsp = true;
+  };
 
 }
 
-
 require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'})
 require('fidget').setup()
-
