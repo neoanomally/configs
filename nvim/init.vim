@@ -57,6 +57,10 @@ nnoremap <S-Tab> <<
 nnoremap ;bn <cmd>bn<cr>
 nnoremap ;bw <cmd>bw<cr>
 nnoremap ;bw <cmd>bd<cr>
+" Below make it so I can open a vertical split and then ;l move between splits
+nnoremap ;l <C-W><C-W> 
+nnoremap ;vs <cmd>vsplit<cr>
+nnoremap ;hs <C-W><C-S>
 
 lua require('metals')
 " The Nom-Metals file has all kinds of keymappings and set up for nvim 
