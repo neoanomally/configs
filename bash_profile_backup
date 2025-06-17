@@ -46,3 +46,4 @@ function getsa() {
 export PATH="/opt/homebrew/bin:$PATH"
 
 eval "$(pyenv init -)"
+alias chrome="open -a \"Google Chrome\""
