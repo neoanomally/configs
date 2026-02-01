@@ -1,21 +1,25 @@
+local metals = require("metals")
+local metals_config = metals.bare_config()
 
 local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "scala", "sbt", "java" },
+  -- Add java to pattern if java
+	pattern = { "scala", "sbt"},
 	callback = function()
 		require("metals").initialize_or_attach({})
 	end,
 	group = nvim_metals_group,
 })
 
-metals_config = require("metals").bare_config()
-  metals_config.settings = {
-    showImplicitArguments = true,
-    excludedPackages = {
-      "akka.actor.typed.javadsl",
-      "com.github.swagger.akka.javadsl"
-	}
+metals_config.settings = {
+  showImplicitArguments = true,
+  excludedPackages = {
+    "akka.actor.typed.javadsl",
+    "com.github.swagger.akka.javadsl"
+  }
 }
+
+metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 metals_config.init_options.statusBarProvider = "on"
 
@@ -159,57 +163,4 @@ dap.configurations.scala = {
 metals_config.settings = {
 	testUserInterface = "Test Explorer",
 }
-
-
--- Autocmd that will actually be in charging of starting the whole thing
-local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
-vim.api.nvim_create_autocmd("FileType", {
-  -- NOTE: You may or may not want java included here. You will need it if you
-  -- want basic Java support but it may also conflict if you are using
-  -- something like nvim-jdtls which also works on a java filetype autocmd.
-  pattern = { "scala", "sbt", "java" },
-  callback = function()
-    require("metals").initialize_or_attach(metals_config)
-  end,
-  group = nvim_metals_group,
-})
-
-
--- TODO: Write configuration for debug adapter protocol so that I can run and
--- execute tests
--- TODO: Do two things 1) A Debug Adapter && 2) DAP Configuration (how to
--- attach)
--- local nmap = function(keys, func, desc)
--- 	if desc then
--- 		desc = 'LSP: ' .. doc
--- 	end
--- 
--- 	vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
--- end
--- 
--- nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
--- nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
--- nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
--- nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
--- nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')	
--- nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
--- nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbol')
--- nmap('<leaders>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-require("dapui").setup()
-local dap, dapui = require("dap"), require("dapui")
-
-vim.keymap.set('n', '<leader><C-d>', function()
-	dapui.toggle()
-end, { desc = "Toggle [D]apui" })
-
--- dap.listeners.after.event_initialized["dapui_config"] = function()
---   dapui.open()
--- end
--- dap.listeners.before.event_terminated["dapui_config"] = function()
---   dapui.close()
--- end
--- dap.listeners.before.event_exited["dapui_config"] = function()
---   dapui.close()
--- end
 

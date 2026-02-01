@@ -1,49 +1,85 @@
-# include .bashrc if it exists
+# -------------------------------
+# 1. INITIALIZATIONS
+# -------------------------------
+
 if [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
 fi
 
-
-HISTSIZE=10000
-
-PS1="\[\033[01;34m\]\u@\h \t \w \[\033[00m\]"
 (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/mesanders/.zprofile
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
-export JAVA_HOME=$(/usr/libexec/java_home -v 17)
-alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
 
 export PYENV_ROOT="$HOME/.pyenv"
-# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 
-# Created by `pipx` on 2023-06-13 02:09:51
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/Applications/IntelliJ IDEA.app/Contents/MacOS:$PATH"
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+eval "$(pyenv init -)"
+
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+. "$HOME/.cargo/env"
+
+# -------------------------------
+# 2. ENVIRONMENT VARIABLES
+# -------------------------------
+
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
 export PATH="$PATH:/Users/mesanders/.local/bin"
 
-alias EVAL_JENV='eval "$(jenv init -)"'
-
-alias set_java_11="export JAVA_HOME=$(/usr/libexec/java_home -v 11)"
-alias set_java_17="export JAVA_HOME=$(/usr/libexec/java_home -v 17)"
-
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# TODO: THe following might need to be at the bottom in order to work? 
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
-
-alias ssh_foundry="ssh -i ~/.secrets/sandman-foundry.key ubuntu@129.80.80.34"
-
 . "$HOME/.cargo/env"
-alias activate_py312='eval "$(pyenv init -)" && pyenv activate py312'
 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PATH:/Users/mesanders/.local/bin:/opt/homebrew/anaconda3/bin:/Users/mesanders/.scripts"
+export NVM_DIR="$HOME/.nvm"
 
+# -------------------------------
+# 3. FUNCTION DEFINITIONS
+# -------------------------------
 function getsa() {
   kubectl -n "$1" get serviceaccount default -ojson | jq -r '.metadata.annotations["iam.gke.io/gcp-service-account"]'
 }
 
-export PATH="/opt/homebrew/bin:$PATH"
+function run_sbt_test() {
+	if [ -z "$1" ]; then
+		echo "run_sbt_test scala test className"
+	else 
+		sbt "test:testOnly *$1"
+	fi
+}
 
-eval "$(pyenv init -)"
+# -------------------------------
+# 4. ALIAS DEFINITIONS
+# -------------------------------
+alias EVAL_JENV='eval "$(jenv init -)"'
+alias set_java_21="sdk use java 21.0.1-amzn"
+alias set_java_17="sdk use java 17.0.9-amzn"
+alias set_java_11="sdk use java 11.0.21-amzn"
+alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
+
+alias activate_py312='eval "$(pyenv init -)" && pyenv activate py312'
 alias chrome="open -a \"Google Chrome\""
+alias vim="nvim"
+
+# -------------------------------
+# 5. SHELL OPTIONS
+# -------------------------------
+HISTSIZE=10000
+
+PS1="\[\033[01;34m\]\u@\h \t \w \[\033[00m\]"
+
+# -------------------------------
+# 6. DO NOT ADD TO ANY GIT
+# -------------------------------
