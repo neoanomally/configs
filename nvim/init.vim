@@ -22,7 +22,8 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'ray-x/lsp_signature.nvim'
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'hrsh7th/nvim-cmp'
-Plug 'simrat39/rust-tools.nvim'
+Plug 'mrcjkb/rustaceanvim'
+" Plug 'simrat39/rust-tools.nvim' " no longer supported
 Plug 'gennaro-tedesco/nvim-jqx'
 " Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-telescope/telescope.nvim'
@@ -43,7 +44,12 @@ Plug 'rcarriga/nvim-dap-ui'
 Plug 'nvim-neotest/nvim-nio'
 " Plug 'navarasu/onedark.nvim'
 Plug 'jremmen/vim-ripgrep'
-
+Plug 'lervag/wiki.vim'
+Plug 'gabrielelana/vim-markdown'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'folke/snacks.nvim'
+Plug 'shahshlok/vim-coach.nvim'
+Plug 'rmagatti/auto-session'
 
 call plug#end()
 
@@ -66,8 +72,10 @@ lua require('metals')
 " The Nom-Metals file has all kinds of keymappings and set up for nvim 
 " The main file has all kinds of developer settings in general. Both are good. 
 lua require('neoanomally/nom-metals') 
+lua require('neoanomally/nom-java')
 lua require('neoanomally/main') 
 " lua require('neoanomally/nom-java')
 lua vim.o.hlsearch = false
 lua vim.o.mouse = 'a'
+let g:java_ignore_markdown = 28
 
