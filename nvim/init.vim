@@ -1,6 +1,3 @@
-colorscheme jellybeans
-" colorscheme onedark
-"colorscheme catppuccin 
 set number
 set tabstop=2
 set shiftwidth=2
@@ -25,7 +22,8 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'mrcjkb/rustaceanvim'
 " Plug 'simrat39/rust-tools.nvim' " no longer supported
 Plug 'gennaro-tedesco/nvim-jqx'
-" Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'folke/tokyonight.nvim'
+Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'beauwilliams/statusline.lua'
 Plug 'preservim/nerdtree'
@@ -53,6 +51,9 @@ Plug 'rmagatti/auto-session'
 
 call plug#end()
 
+colorscheme tokyonight-night
+" colorscheme onedark
+" colorscheme catppuccin 
 " Using Lua functions
 " nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 " nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
@@ -63,6 +64,7 @@ nnoremap <S-Tab> <<
 nnoremap ;bn <cmd>bn<cr>
 nnoremap ;bw <cmd>bw<cr>
 nnoremap ;bw <cmd>bd<cr>
+nnoremap ;bp <cmd>bp<cr>
 " Below make it so I can open a vertical split and then ;l move between splits
 nnoremap ;l <C-W><C-W> 
 nnoremap ;vs <cmd>vsplit<cr>

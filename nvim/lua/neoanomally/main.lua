@@ -21,6 +21,23 @@ require('telescope').setup({
     }
 })
 
+require("tokyonight").setup({
+  -- "storm" | "moon" | "night" | "day"
+  style = "night",
+
+  -- Other config options...
+  transparent = true,
+  terminal_colors = true,
+  day_brightness = 0.2
+})
+
+-- Load the colorscheme after the setup
+vim.cmd[[colorscheme tokyonight]]
+
+require('nvim-treesitter').setup()
+require('nvim-treesitter').install { 'rust', 'javascript', 'python', 'java', 'lua' }
+
+
 pcall(require('telescope').loadextension, 'fzf')
 
 vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles, { desc = '[?] Find recently opened files' })
