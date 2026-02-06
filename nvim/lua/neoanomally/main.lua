@@ -160,6 +160,18 @@ vim.lsp.config("lua_ls", {
 })
 
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "rust", "lua"},-- Target Rusts
+  callback = function()
+    vim.cmd("colorscheme jellybeans")
+    -- Change the color of the '@keyword' highlight group for Python files
+    -- vim.api.nvim_set_hl(0, "@keyword", { fg = "#ff0000", style = "bold" }) -- Example: bold red keywords
+    -- Change the color of the 'Comment' group for Python files
+    -- vim.api.nvim_set_hl(0, "Comment", { fg = "#00ff00", style = "italic" }) -- Example: green italic comments
+  end,
+})
+
+
 local dap = require("dap")
 dap.configurations.java = {
   {
