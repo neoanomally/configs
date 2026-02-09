@@ -40,6 +40,8 @@ require('nvim-treesitter').install { 'rust', 'javascript', 'python', 'java', 'lu
 
 pcall(require('telescope').loadextension, 'fzf')
 
+
+vim.api.nvim_set_hl(0, 'LineNr', { fg = 'white' })
 vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles, { desc = '[?] Find recently opened files' })
 -- vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
@@ -159,6 +161,19 @@ vim.lsp.config("lua_ls", {
   }
 })
 
+vim.lsp.config('clangd', {
+  root_markers = { '.clang-format', 'compile_commands.json' },
+  filetypes = { 'c' },
+  capabilities = {
+    textDocument = {
+      completion = {
+        completionItem = {
+          snippetSupport = true,
+        }
+      }
+    }
+  }
+})
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "rust", "lua"},-- Target Rusts
@@ -202,7 +217,7 @@ vim.lsp.config('pyright', {
 })
 
 -- 2. Enable the server
-vim.lsp.enable({ 'pyright', 'lua_ls' })
+vim.lsp.enable({ 'pyright', 'lua_ls', 'clangd' })
 
 vim.o.completeopt = 'menuone,noselect'
 require'cmp'.setup {
@@ -228,4 +243,5 @@ require'cmp'.setup {
 
 require('fidget').setup()
 require('vim-coach').setup()
+
 
