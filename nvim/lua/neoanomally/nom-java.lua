@@ -74,7 +74,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
         -- CASE B: Standard JDTLS Setup
         local config = {
-            cmd = { '/opt/homebrew/Cellar/jdtls/1.47.0/bin/jdtls' },
+            cmd = { '/opt/homebrew/Cellar/jdtls/1.56.0/bin/jdtls' },
             root_dir = standard_root,
             capabilities = capabilities,
             on_attach = function()

@@ -1,3 +1,4 @@
+-- TODO: Organize this file.
 local utility = require("neoanomally.utility");
 local telescope_builtin = require("telescope.builtin");
 
@@ -11,6 +12,9 @@ require('lualine').setup {
 }
 require('Comment').setup()
 require('mason').setup()
+require('mason-lspconfig').setup({
+  ensure_installed = { "markdown_oxide", "clangd", "rust_analyzer", "pyright", "jdtls" }
+})
 vim.g.mapleader = ';'
 require('telescope').setup({
     defaults = {
@@ -33,6 +37,9 @@ require("tokyonight").setup({
 
 -- Load the colorscheme after the setup
 vim.cmd[[colorscheme tokyonight]]
+vim.cmd('highlight VertSplit guifg=#FFFFFF')
+vim.api.nvim_set_hl(0, "NvimTreeWinSeparator", { fg = "#7f7f7f" })
+vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#7f7f7f', bg = 'none' })
 
 require('nvim-treesitter').setup()
 require('nvim-treesitter').install { 'rust', 'javascript', 'python', 'java', 'lua' }
@@ -216,8 +223,51 @@ vim.lsp.config('pyright', {
   -- or include it here if supported by your specific Nvim version's config merging
 })
 
+-- An example nvim-lspconfig capabilities setting
+local markdown_capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+vim.lsp.config('markdown-oxide', {
+    -- Ensure that dynamicRegistration is enabled! This allows the LS to take into account actions like the
+    -- Create Unresolved File code action, resolving completions for unindexed code blocks, ...
+    pattern = { 'md' },
+    capabilities = vim.tbl_deep_extend(
+        'force',
+        markdown_capabilities,
+        {
+            workspace = {
+                didChangeWatchedFiles = {
+                    dynamicRegistration = true,
+                },
+            },
+        }
+    ),
+    on_attach = function(client, bufnr)
+      local function check_codelens_support()
+      local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+      for _, c in ipairs(clients) do
+        if c.server_capabilities.codeLensProvider then
+          return true
+        end
+      end
+      return false
+      end
+
+      vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'CursorHold', 'LspAttach', 'BufEnter' }, {
+      buffer = bufnr,
+      callback = function ()
+        if check_codelens_support() then
+          vim.lsp.codelens.refresh({bufnr = 0})
+        end
+      end
+      })
+      -- trigger codelens refresh
+      vim.api.nvim_exec_autocmds('User', { pattern = 'LspAttached' })
+
+    end
+})
+
 -- 2. Enable the server
-vim.lsp.enable({ 'pyright', 'lua_ls', 'clangd' })
+vim.lsp.enable({ 'pyright', 'lua_ls', 'clangd', 'markdown-oxide' })
 
 vim.o.completeopt = 'menuone,noselect'
 require'cmp'.setup {

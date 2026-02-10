@@ -47,6 +47,7 @@ Plug 'gabrielelana/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'folke/snacks.nvim'
 Plug 'shahshlok/vim-coach.nvim'
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'rmagatti/auto-session'
 
 call plug#end()
