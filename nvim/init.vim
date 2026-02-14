@@ -11,44 +11,43 @@ filetype indent on
 
 call plug#begin('~/.config/nvim/site')
 
-Plug 'nvim-neotest/nvim-nio'
-Plug 'scalameta/nvim-metals'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
-Plug 'neovim/nvim-lspconfig'
-Plug 'ray-x/lsp_signature.nvim'
-Plug 'mfussenegger/nvim-jdtls'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'mrcjkb/rustaceanvim'
+" Plug 'navarasu/onedark.nvim'
 " Plug 'simrat39/rust-tools.nvim' " no longer supported
-Plug 'gennaro-tedesco/nvim-jqx'
-Plug 'folke/tokyonight.nvim'
-Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'MeanderingProgrammer/render-markdown.nvim'
 Plug 'beauwilliams/statusline.lua'
-Plug 'preservim/nerdtree'
-Plug 'mfussenegger/nvim-dap'
-Plug 'mfussenegger/nvim-dap-python'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'folke/snacks.nvim'
+Plug 'folke/tokyonight.nvim'
+Plug 'gabrielelana/vim-markdown'
+Plug 'gennaro-tedesco/nvim-jqx'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/vim-vsnip'
-Plug 'williamboman/mason.nvim'
-Plug 'jay-babu/mason-nvim-dap.nvim'
-Plug 'nvim-lualine/lualine.nvim'
-Plug 'numToStr/Comment.nvim'
-Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'j-hui/fidget.nvim'
-Plug 'rcarriga/nvim-dap-ui'
-Plug 'nvim-neotest/nvim-nio'
-" Plug 'navarasu/onedark.nvim'
+Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'jremmen/vim-ripgrep'
 Plug 'lervag/wiki.vim'
-Plug 'gabrielelana/vim-markdown'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-Plug 'folke/snacks.nvim'
-Plug 'shahshlok/vim-coach.nvim'
-Plug 'christoomey/vim-tmux-navigator'
+Plug 'mfussenegger/nvim-dap'
+Plug 'mfussenegger/nvim-dap-python'
+Plug 'mfussenegger/nvim-jdtls'
+Plug 'mrcjkb/rustaceanvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'numToStr/Comment.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'nvim-neotest/nvim-nio'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'preservim/nerdtree'
+Plug 'ray-x/lsp_signature.nvim'
+Plug 'rcarriga/nvim-dap-ui'
 Plug 'rmagatti/auto-session'
+Plug 'scalameta/nvim-metals'
+Plug 'shahshlok/vim-coach.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'williamboman/mason.nvim'
 
 call plug#end()
 
@@ -81,4 +80,4 @@ lua require('neoanomally/main')
 lua vim.o.hlsearch = false
 lua vim.o.mouse = 'a'
 let g:java_ignore_markdown = 28
-
+set clipboard+=unnamedplus
