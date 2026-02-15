@@ -66,10 +66,36 @@ require('mason-lspconfig').setup({
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+
+-- HOVER configuration for LSP. 
+-- Decorating the window
+local _default_buf_hover = vim.lsp.buf.hover;
+vim.lsp.buf.hover = function(opts)
+  opts = opts or { }
+  opts.border = "rounded"
+  return _default_buf_hover(opts)
+end
+
+-- This is configuration for the boarder when doing [O]pen [D]iagnostics
+vim.diagnostic.config ({
+  float = {
+    border = {
+      {"╔", "FloatBorder"},
+      {"═", "FloatBorder"},
+      {"╗", "FloatBorder"},
+      {"║", "FloatBorder"},
+      {"╝", "FloatBorder"},
+      {"═", "FloatBorder"},
+      {"╚", "FloatBorder"},
+      {"║", "FloatBorder"}
+    },
+  }
+})
+
+
 -- Server Configs
 -- NOTE: I am assuming 'vim.lsp.config' is a custom wrapper you use. 
 -- Standard Neovim uses require('lspconfig').server.setup({})
-
 vim.lsp.config("lua_ls", {
     settings = {
         Lua = {
@@ -86,7 +112,7 @@ vim.lsp.config('clangd', {
         textDocument = {
             completion = { completionItem = { snippetSupport = true } }
         }
-    }
+    },
 })
 
 vim.lsp.config('pyright', {})
