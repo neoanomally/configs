@@ -56,9 +56,9 @@ require('mason').setup()
 
 -- Note: Ensure you do NOT have a default handler here for rust_analyzer if using rustaceanvim
 require('mason-lspconfig').setup({
-    ensure_installed = { "markdown_oxide", "clangd", "pyright", "jdtls", "rust_analyzer" },
+    ensure_installed = { "markdown_oxide", "clangd", "pyright", "rust_analyzer" },
     automatic_enable = {
-      exclude = { "rust_analyzer" }
+      exclude = { "rust_analyzer", "jdtls", "java_language_server" }
     },
 })
 
