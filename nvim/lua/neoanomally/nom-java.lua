@@ -2,6 +2,8 @@
 -- 1. LSP CONFIGURATION (Modern Native API)
 -- =============================================================================
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local sdk_java_path = os.getenv("HOME") .. "/.sdkman/candidates/java/current/bin/java"
+
 
 -- Define the lightweight server for Bazel Monorepo
 vim.lsp.config('java_language_server', {
@@ -54,11 +56,13 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         local jdtls = require("jdtls")
         -- Detect Roots
-        local bazel_root = vim.fs.root(0, { "BUILD.bazel" })
+        local bazel_root = vim.fs.root(0, { "MODULE.bazel", "WORKSPACE", "BUILD.bazel", "BUILD" })
         local standard_root = vim.fs.root(0, { 'gradlew', '.git', 'mvnw' })
 
         -- CASE A: Bazel Monorepo
         if bazel_root then
+          vim.api.nvim_set_current_dir(bazel_root)
+
           vim.lsp.start({
             name = 'java_language_server',
             -- This ensures the process starts exactly in the directory where BUILD.bazel lives
@@ -70,8 +74,8 @@ vim.api.nvim_create_autocmd("FileType", {
                 return client.name == conf.name and client.root_dir == conf.root_dir
             end
           })
-        end
-
+          vim.lsp.enable("java_language_server")
+      else
         -- CASE B: Standard JDTLS Setup
         local config = {
             cmd = { '/opt/homebrew/Cellar/jdtls/1.56.0/bin/jdtls' },
@@ -89,6 +93,7 @@ vim.api.nvim_create_autocmd("FileType", {
         }
 
         jdtls.start_or_attach(config)
+      end
     end,
 })
 
