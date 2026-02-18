@@ -9,14 +9,21 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities()
 -- =============================================================================
 local function get_dynamic_bazel_target()
     local full_path = vim.fn.expand('%:p:h')
-    local repo_name = "services-pilot"
-    local _, match_end = string.find(full_path, repo_name .. "/")
-    
-    if match_end then
-        local relative_path = string.sub(full_path, match_end + 1)
-        return relative_path .. ":*"
+
+    local pivot = "services%-pilot/"
+    local _, match_end = string.find(full_path, pivot)
+
+    if not match_end then
+      return ""
     end
-    return ":*"
+
+    local after_pivot = string.sub(full_path, match_end + 1)
+
+    local first_two = string.match(after_pivot, "([^/]+/[^/]+)")
+
+    if first_two then
+        return "//" .. first_two
+    end
 end
 
 -- =============================================================================
@@ -50,7 +57,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
         if bazel_root then
             -- CASE A: java-language-server for Bazel
-            local dynamic_target = get_dynamic_bazel_target()
+            local dynamic_target = get_dynamic_bazel_target() .. ":*"
 
             local jls_config = {
                 name = "java_language_server",
