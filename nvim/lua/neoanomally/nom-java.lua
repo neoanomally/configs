@@ -24,6 +24,8 @@ local function get_dynamic_bazel_target()
     if first_two then
         return "//" .. first_two
     end
+
+    return "//" .. after_pivot
 end
 
 -- =============================================================================
@@ -43,7 +45,7 @@ vim.api.nvim_create_autocmd("FileType", {
         -- GUIDE SAYS: Use BUILD.bazel as the marker for the monorepo
         local bazel_root = vim.fs.root(0, { "BUILD.bazel", "WORKSPACE" })
         local standard_root = vim.fs.root(0, { 'gradlew', '.git', 'mvnw' })
-
+        local mason_bin = vim.fn.stdpath("data") .. "/mason/bin:"
         local jdtls = require("jdtls")
         local jdtls_config = {
             cmd = { '/opt/homebrew/bin/jdtls' }, -- Ensure this path is correct
@@ -58,21 +60,25 @@ vim.api.nvim_create_autocmd("FileType", {
         if bazel_root then
             -- CASE A: java-language-server for Bazel
             local dynamic_target = get_dynamic_bazel_target() .. ":*"
-
             local jls_config = {
                 name = "java_language_server",
                 -- Guide path fix: mason/packages/... vs mason/bin/...
-                cmd = { vim.fn.stdpath("data") .. "/mason/bin/java-language-server" },
+                cmd = { vim.fn.stdpath("data") .. "/mason/packages/java-language-server/java-language-server" },
                 root_dir = bazel_root,
                 capabilities = capabilities,
                 cmd_env = {
                     JAVA_HOME = sdk_java_path,
-                    PATH = sdk_java_path .. "/bin:" .. os.getenv("PATH")
+                    PATH = mason_bin .. sdk_java_path .. "/bin:" .. os.getenv("PATH")
                 },
+                on_error = function(err_code, msg)
+                  jdtls.start_or_attach(jdtls_config)
+                end,
                 settings = {
                     java = {
                         -- Narrowing scope to stop the //... query crash
-                        bazelTargets = { dynamic_target }
+                        bazelTargets = { dynamic_target },
+                        bazelScope = { dynamic_target },
+                        bazelConfig = "--allow_analysis_failures --experimental_repository_disable_download_verify"
                     }
                 },
                 -- Fix for the "bad argument #1 to ipairs" defect mentioned in your guide
@@ -91,7 +97,6 @@ vim.api.nvim_create_autocmd("FileType", {
                 end
             })
         else
-          print("STARTING JDTLS: ")
             -- CASE B: Standard JDTLS Setup
             jdtls.start_or_attach(jdtls_config)
         end
